@@ -1,4 +1,39 @@
-// Register your apis here
+// Collections
+import Projects from '../../api/projects/projects';
+import Videos from '../../api/videos/videos';
+import VideoAnalytics from '../../api/video_analytics/video_analytics';
 
-import '../../api/links/methods.js';
-import '../../api/links/server/publications.js';
+// API Endpoints
+import ProjectEndpoints from '../../api/projects/endpoints';
+import VideoEndpoints from '../../api/videos/endpoints';
+import VideoAnalyticsEndpoints from '../../api/video_analytics/endpoints';
+
+if (Meteor.isServer) {
+  const API = new Restivus({
+    version: 'v1',
+    prettyJson: true,
+  });
+
+  // Initialize collections
+  API.addCollection(Projects);
+  API.addCollection(Videos);
+  API.addCollection(VideoAnalytics);
+
+  API.addCollection(Meteor.users, {
+    excludedEndpoints: ['patch', 'put', 'getAll'],
+    routeOptions: {
+      authRequired: false,
+    },
+    endpoints: {
+      post: {
+        authRequired: false,
+      },
+      delete: {
+        roleRequired: 'admin',
+      },
+    },
+  });
+
+  // Run endpoints init
+  ProjectEndpoints(API);
+}
