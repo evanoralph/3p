@@ -1,4 +1,5 @@
 import Projects from './projects';
+import Videos from '../videos/videos';
 
 export default function(API) {
   API.addRoute(
@@ -17,33 +18,27 @@ export default function(API) {
   );
 
   API.addRoute(
-    'projects/:userId',
+    'projects/add',
     { authRequired: false },
     {
-      get: function() {
-        const projects = Projects.find({ userId: this.urlParams.userId }).fetch();
+      post: function() {
+        const { userId, projectName } = this.request.query;
 
-        return {
-          status: 'success',
-          data: projects,
-        };
+        return !!Projects.insert({ userId, projectName });
       },
     }
   );
 
   API.addRoute(
-    'projects/:userId/:projectId',
+    'projects/:projectId',
     { authRequired: false },
     {
       get: function() {
-        const project = Projects.findOne({
-          _id: this.urlParams.projectId,
-          userId: this.urlParams.userId,
-        });
+        const project = Projects.findOne({ _id: this.urlParams.projectId });
 
         return {
           status: 'success',
-          data: project,
+          data: projects,
         };
       },
 
@@ -55,21 +50,32 @@ export default function(API) {
           }
         });
 
-        if (updateAction) {
-          return true;
-        } else {
-          return false;
-        }
+        return Boolean(updateAction);
       },
 
       delete: {
         roleRequired: [],
         action: function() {
-          if (Projects.remove({ _id: this.urlParams.projectId })) {
-            return true;
-          }
-          return false;
+          return !!Projects.remove({_id: this.urlParams.projectId});
         }
+      }
+
+    }
+  );
+
+  API.addRoute(
+    'projects/:projectId/videos',
+    { authRequired: false },
+    {
+      get: function() {
+        const videos = Videos.find({
+          projectId: this.urlParams.projectId,
+        }).fetch();
+
+        return {
+          status: 'success',
+          data: videos,
+        };
       }
     }
   );

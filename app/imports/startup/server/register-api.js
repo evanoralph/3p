@@ -11,6 +11,7 @@ import VideoAnalyticsEndpoints from '../../api/video_analytics/endpoints';
 if (Meteor.isServer) {
   const API = new Restivus({
     version: 'v1',
+    useDefaultAuth: true,
     prettyJson: true,
   });
 
