@@ -3,16 +3,11 @@ import Videos from "../videos/videos";
 
 export default function(API) {
   // API.addRoute(
-  //   'login/',
+  //   'login',
   //   { authRequired: false },
   //   {
-  //     get: function() {
-  //       const projects = Projects.find({}).fetch();
-  //
-  //       return {
-  //         status: 'success',
-  //         data: projects,
-  //       };
+  //     post: function() {
+  //       console.log('called', this.request)
   //     },
   //   }
   // );
