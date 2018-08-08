@@ -7,10 +7,12 @@ import VideoAnalytics from '../../api/video_analytics/video_analytics';
 import ProjectEndpoints from '../../api/projects/endpoints';
 import VideoEndpoints from '../../api/videos/endpoints';
 import VideoAnalyticsEndpoints from '../../api/video_analytics/endpoints';
+import UserEndpoints from '../../api/users/endpoints';
 
 if (Meteor.isServer) {
   const API = new Restivus({
     version: 'v1',
+    useDefaultAuth: true,
     prettyJson: true,
   });
 
@@ -36,4 +38,5 @@ if (Meteor.isServer) {
 
   // Run endpoints init
   ProjectEndpoints(API);
+  UserEndpoints(API);
 }
