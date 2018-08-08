@@ -1,3 +1,8 @@
-// Import client startup through a single index entry point
+import React from 'react';
+import { render } from 'react-dom';
+import { Meteor } from 'meteor/meteor';
+import App from '../../ui/layouts/App.js';
 
-import './routes.js';
+Meteor.startup(() => {
+  render(<App />, document.getElementById('react-root'));
+});
