@@ -71,43 +71,17 @@ export default function(API) {
         const { authToken, userId } = this.request.body;
 
         // Check null fields
-        if (!email | !password || !username) {
+        if (!authToken || !userId) {
           return {
             status: 'error',
-            message: 'Please fill out all fields',
+            message: 'Error authorizing this user',
           };
         }
 
         // Check for existing username
-        const isExisting = Meteor.users.findOne({ username });
+        const isExisting = Meteor.users.findOne({ _id: userId, 'services.resume.loginTokens.hashedToken': Accounts._hashLoginToken(authToken) });
 
-        if (isExisting) {
-          return {
-            status: 'error',
-            message: `Username already exists`,
-          };
-        }
-
-        try {
-          const user = Accounts.createUser({
-            email,
-            password,
-            username,
-            profile: {},
-          });
-
-          return {
-            status: 'success',
-            userId: user,
-            email,
-            username,
-          };
-        } catch (err) {
-          return {
-            status: 'error',
-            message: err.reason,
-          };
-        }
+        return Boolean(isExisting);
       },
     }
   );
