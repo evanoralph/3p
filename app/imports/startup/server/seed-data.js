@@ -63,6 +63,7 @@ export default function() {
   const userId = Accounts.createUser({
     email: 'testaccount1@3ptouchmedia.com',
     password: '3ptouchtest',
+    username: '3ptouch',
     profile: {
       firstName: 'Tester',
       lastName: 'Account',

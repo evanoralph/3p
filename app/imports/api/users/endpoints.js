@@ -61,4 +61,54 @@ export default function(API) {
       },
     }
   );
+
+  API.addRoute(
+    'check-token',
+    { authRequired: false },
+    {
+      post: function() {
+        // Get params
+        const { authToken, userId } = this.request.body;
+
+        // Check null fields
+        if (!email | !password || !username) {
+          return {
+            status: 'error',
+            message: 'Please fill out all fields',
+          };
+        }
+
+        // Check for existing username
+        const isExisting = Meteor.users.findOne({ username });
+
+        if (isExisting) {
+          return {
+            status: 'error',
+            message: `Username already exists`,
+          };
+        }
+
+        try {
+          const user = Accounts.createUser({
+            email,
+            password,
+            username,
+            profile: {},
+          });
+
+          return {
+            status: 'success',
+            userId: user,
+            email,
+            username,
+          };
+        } catch (err) {
+          return {
+            status: 'error',
+            message: err.reason,
+          };
+        }
+      },
+    }
+  );
 }
