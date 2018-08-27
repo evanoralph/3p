@@ -34,7 +34,7 @@ export default function(API) {
     { authRequired: false },
     {
       get: function() {
-        const project = Projects.findOne({ _id: this.urlParams.projectId });
+        const projects = Projects.findOne({ _id: this.urlParams.id });
 
         return {
           status: 'success',
@@ -44,7 +44,7 @@ export default function(API) {
 
       patch: function() {
         const formData = this.request.query;
-        const updateAction = Projects.update({ _id: this.urlParams.projectId }, {
+        const updateAction = Projects.update({ _id: this.urlParams.id }, {
           $set: {
             ...formData
           }
@@ -56,7 +56,7 @@ export default function(API) {
       delete: {
         roleRequired: [],
         action: function() {
-          return !!Projects.remove({_id: this.urlParams.projectId});
+          return !!Projects.remove({_id: this.urlParams.id});
         }
       }
 

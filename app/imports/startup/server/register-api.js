@@ -40,5 +40,6 @@ export default function() {
     // Run endpoints init
     ProjectEndpoints(API);
     UserEndpoints(API);
+    VideoEndpoints(API);
   }
 }
