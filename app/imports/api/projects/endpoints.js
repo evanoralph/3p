@@ -40,9 +40,17 @@ export default function(API) {
     { authRequired: false },
     {
       post: function() {
-        const { userId, projectName } = this.request.query;
+        const { userId, projectName } = this.request.body;
 
-        return !!Projects.insert({ userId, projectName });
+        if (userId && projectName) {
+          return !!Projects.insert({ userId, projectName });
+        } else {
+          return {
+            status: 'error',
+            message: 'User ID and Project Name is required.'
+          }
+        }
+
       },
     }
   );
