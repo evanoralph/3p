@@ -4,14 +4,32 @@ import Videos from '../videos/videos';
 export default function(API) {
   API.addRoute(
     'projects/',
-    { authRequired: false },
+    { authRequired: true },
     {
       get: function() {
-        const projects = Projects.find({}).fetch();
+        const userId = this.request.headers['x-user-id'];
+        const projects = Projects.find({ userId }).fetch();
+        const data = projects.reduce((projectArray, project) => {
+          let videos = Videos.find({ projectId: project._id }).fetch();
+          videos = videos.map(v => {
+            return {
+              image: v.thumbnail,
+              id: v._id
+            }
+          });
+
+          projectArray.push({
+            ...project,
+            videos
+          })
+
+
+          return projectArray;
+        }, []);
 
         return {
           status: 'success',
-          data: projects,
+          data,
         };
       },
     }
