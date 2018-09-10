@@ -66,11 +66,12 @@ export default function(API) {
 
   API.addRoute(
     'check-token',
-    { authRequired: false },
+    { authRequired: true },
     {
       post: function() {
         // Get params
-        const { authToken, userId } = this.request.body;
+        const authToken = this.request.headers['x-auth-token'];
+        const userId = this.request.headers['x-user-id'];
 
         // Check null fields
         if (!authToken || !userId) {
