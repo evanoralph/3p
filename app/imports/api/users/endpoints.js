@@ -2,6 +2,8 @@ import validator from 'validator';
 
 import Projects from '../projects/projects';
 import Videos from '../videos/videos';
+import {Meteor} from "meteor/meteor";
+import { AWS } from 'meteor/peerlibrary:aws-sdk';
 
 export default function(API) {
   API.addRoute(
@@ -85,4 +87,42 @@ export default function(API) {
       },
     }
   );
+
+  API.addRoute(
+    'request-upload',
+    { authRequired: true },
+    {
+      post: function() {
+        // Get params
+        const authToken = this.request.headers['x-auth-token'];
+        const userId = this.request.headers['x-user-id'];
+
+        // Check null fields
+        if (!authToken || !userId) {
+          return {
+            status: 'error',
+            message: 'Error authorizing this user',
+          };
+        }
+
+        let options = {
+          accessKeyId: Meteor.settings.AWS.awsAccessIdUpload,
+          secretAccessKey: Meteor.settings.AWS.awsSecretKeyUpload,
+        };
+
+        let sts = new AWS.STS(options);
+
+        let getCred = Meteor.wrapAsync(sts.getSessionToken, sts);
+
+        let response = getCred({ DurationSeconds: 900 });
+
+        response.Credentials.bucket = Meteor.settings.AWS.awsS3Bucket;
+        response.Credentials.region = Meteor.settings.AWS.awsRegion;
+
+        return response.Credentials;
+
+      },
+    }
+  );
+
 }
