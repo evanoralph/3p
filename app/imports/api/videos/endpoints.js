@@ -21,16 +21,16 @@ export default function(API) {
     { authRequired: false },
     {
       post: function() {
-        const { title, url } = this.request.query;
+        const { projectId, title } = this.request.body;
 
-        if (!title || !url) {
+        if (!projectId || !title) {
           return {
             status: 'error',
-            message: 'Title / Video URL is required',
+            message: 'Project ID / Video Title is required',
           };
         }
 
-        return !!Videos.insert({ title, url });
+        return !!Videos.insert({ title, projectId });
       },
     }
   );
