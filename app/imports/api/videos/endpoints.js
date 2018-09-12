@@ -48,7 +48,7 @@ export default function(API) {
       },
 
       patch: function() {
-        const formData = this.request.query;
+        const formData = this.request.body;
         const updateAction = Videos.update(
           { _id: this.urlParams.id },
           {
