@@ -14,7 +14,8 @@ export default function(API) {
           videos = videos.map(v => {
             return {
               image: v.thumbnail,
-              id: v._id
+              id: v._id,
+              fileType: v.fileType
             }
           });
 
