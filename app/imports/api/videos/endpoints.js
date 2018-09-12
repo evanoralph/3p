@@ -21,16 +21,30 @@ export default function(API) {
     { authRequired: false },
     {
       post: function() {
-        const { projectId, title } = this.request.body;
+        const { projectId, title, fileType } = this.request.body;
 
-        if (!projectId || !title) {
+        if (!projectId) {
           return {
             status: 'error',
-            message: 'Project ID / Video Title is required',
+            message: 'Project ID is required',
           };
         }
 
-        return !!Videos.insert({ title, projectId });
+        if (!title) {
+          return {
+            status: 'error',
+            message: 'Video title is required',
+          };
+        }
+
+        if (!fileType) {
+          return {
+            status: 'error',
+            message: 'File type is required',
+          };
+        }
+
+        return Videos.insert({ title, projectId, fileType });
       },
     }
   );
