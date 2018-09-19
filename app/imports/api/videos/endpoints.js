@@ -21,7 +21,7 @@ export default function(API) {
     { authRequired: false },
     {
       post: function() {
-        const { projectId, title, fileType } = this.request.body;
+        const { projectId, title, fileType, orientation } = this.request.body;
 
         if (!projectId) {
           return {
@@ -44,7 +44,14 @@ export default function(API) {
           };
         }
 
-        return Videos.insert({ title, projectId, fileType });
+        if (!orientation) {
+          return {
+            status: 'error',
+            message: 'Please specify video orientation (portrait/landscape)',
+          };
+        }
+
+        return Videos.insert({ title, projectId, fileType, orientation });
       },
     }
   );
