@@ -15,7 +15,8 @@ export default function(API) {
             return {
               image: v.thumbnail,
               id: v._id,
-              fileType: v.fileType
+              fileType: v.fileType,
+              orientation: v.orientation
             }
           });
 
