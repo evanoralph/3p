@@ -1,5 +1,7 @@
 import Videos from '../videos/videos';
 
+const allowedFileTypes = ['mp4', 'mov']; // mp4 and mov
+
 export default function(API) {
   API.addRoute(
     'videos/',
@@ -44,6 +46,13 @@ export default function(API) {
           };
         }
 
+        if (fileType && allowedFileTypes.indexOf(fileType) === -1) {
+          return {
+            status: 'error',
+            message: 'Only .mp4 and .mov files are accepted file types',
+          };
+        }
+
         if (!orientation) {
           return {
             status: 'error',
@@ -58,7 +67,7 @@ export default function(API) {
 
   API.addRoute(
     'videos/:videoId',
-    { authRequired: false },
+    { authRequired: true },
     {
       get: function() {
         const video = Videos.findOne({ _id: this.urlParams.id });
@@ -85,7 +94,12 @@ export default function(API) {
       delete: {
         roleRequired: [],
         action: function() {
-          return !!Videos.remove({ _id: this.urlParams.id });
+          // Get userid from headers
+          const userId = this.request.headers['x-user-id'];
+
+          if (userId) {
+            return !!Videos.remove({ _id: this.urlParams.id, userId });
+          }
         },
       },
     }

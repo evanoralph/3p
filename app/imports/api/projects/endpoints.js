@@ -16,15 +16,14 @@ export default function(API) {
               image: v.thumbnail,
               id: v._id,
               fileType: v.fileType,
-              orientation: v.orientation
-            }
+              orientation: v.orientation,
+            };
           });
 
           projectArray.push({
             ...project,
-            videos
-          })
-
+            videos,
+          });
 
           return projectArray;
         }, []);
@@ -49,17 +48,16 @@ export default function(API) {
         } else {
           return {
             status: 'error',
-            message: 'User ID and Project Name is required.'
-          }
+            message: 'User ID and Project Name is required.',
+          };
         }
-
       },
     }
   );
 
   API.addRoute(
     'projects/:projectId',
-    { authRequired: false },
+    { authRequired: true },
     {
       get: function() {
         const projects = Projects.findOne({ _id: this.urlParams.id });
@@ -72,11 +70,14 @@ export default function(API) {
 
       patch: function() {
         const formData = this.request.query;
-        const updateAction = Projects.update({ _id: this.urlParams.id }, {
-          $set: {
-            ...formData
+        const updateAction = Projects.update(
+          { _id: this.urlParams.id },
+          {
+            $set: {
+              ...formData,
+            },
           }
-        });
+        );
 
         return Boolean(updateAction);
       },
@@ -84,10 +85,12 @@ export default function(API) {
       delete: {
         roleRequired: [],
         action: function() {
-          return !!Projects.remove({_id: this.urlParams.id});
-        }
-      }
+          // Get userid from headers
+          const userId = this.request.headers['x-user-id'];
 
+          return !!Projects.remove({ _id: this.urlParams.id, userId });
+        },
+      },
     }
   );
 
@@ -104,7 +107,7 @@ export default function(API) {
           status: 'success',
           data: videos,
         };
-      }
+      },
     }
   );
 }
